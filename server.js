@@ -1,6 +1,7 @@
-const pool = require('./data/db')
-const io = require('socket.io')(3000)
 
+const controller = require('./data/controller')
+const io = require('socket.io')(3000)
+/* 
 const  getData = async () => {
     let courses = []
     try {
@@ -13,6 +14,7 @@ const  getData = async () => {
     }
     return courses
 }
+*/
 
 const users = {}
 
@@ -20,10 +22,12 @@ io.on('connection', socket => {
     console.log('new User')
     socket.on('new-user', name => {
 
-        getData().then((data) => {
+        controller.createUser(name)
+        /*
+        controller.getData().then((data) => {
             console.log('courses', data)
         });
-
+        */
 
         users[socket.id] = name
         socket.broadcast.emit('user-connected', name)
