@@ -39,8 +39,8 @@ io.on("connection", socket => {
     
     controller.createConversation(data).then(data => {
       console.log("conversation created: ", data);
+      socket.emit("conversation-data", data);
       /*
-      socket.emit("user-data", data);
       users[socket.id] = data.name;
       socket.broadcast.emit("user-connected", data.name);
       */
