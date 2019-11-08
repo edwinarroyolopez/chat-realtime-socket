@@ -50,6 +50,15 @@ export default class App extends Component {
       dataUser.setAttribute("data-id", user.uuid_user);
     });
 
+
+    socket.on("conversation-data", conversation => {
+      console.log("conversation-data", conversation);
+      /*
+      const dataUser = document.getElementById("data-user");
+      dataUser.setAttribute("data-id", user.uuid_user);
+      */
+    });
+
     if (!localStorage.auth) {
       /* Login */
       const name = prompt("What is your name?");
