@@ -19,3 +19,18 @@ create table conversation
     created_at      timestamp with time zone,
     updated_at      timestamp with time zone
 );
+
+
+
+-- auto-generated definition
+create table chat_messages
+(
+    uuid_message  text not null
+    constraint uuid_message_pkey primary key,
+    uuid_conversation  text not null,
+    uuid_user            text not null,
+    message            text,
+    created_at      timestamp with time zone,
+    updated_at      timestamp with time zone
+);
+
