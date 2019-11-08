@@ -18,6 +18,7 @@ module.exports = {
         );
         user = rows[0];
       } else {
+        user = rows[0];
         console.error("The user already exist!");
       }
     } catch (error) {
@@ -65,5 +66,36 @@ module.exports = {
       console.error("error: ", error);
     }
     return conversation;
-  }
+  },
+  newMessage: async data => {
+    let message = [];
+    let uuid_conversation = data.uuid_conversation;
+    let uuid_user = data.uuid_user;
+    let text_message = data.text_message;
+
+    try {
+      const uid = uuid();
+      const client = await pool.connect();
+      const { rows } = await client.query(
+        `INSERT INTO chat_messages (uuid_message,uuid_conversation,uuid_user,text_message) values ($1, $2, $3, $4)  returning *`,
+        [uid, uuid_conversation, uuid_user, text_message]
+      );
+      message = rows[0];
+    } catch (error) {
+      console.error("error: ", error);
+    }
+    return message;
+  },
+  getMessages: async (uuid_conversation) => {
+    let messages = [];
+    try {
+      const client = await pool.connect();
+      const { rows } = await client.query(`SELECT * FROM chat_messages WHERE uuid_conversation=$1`, [uuid_conversation]);
+      messages = rows;
+    } catch (error) {
+      console.error("error", error);
+      //  errorHandler(error)
+    }
+    return messages;
+  },
 };

@@ -39,6 +39,7 @@ body {
 
   #message-container {
     margin: auto;
+    min-width: 280px;
   }
   #message-container div {
     background-color: #CCC;

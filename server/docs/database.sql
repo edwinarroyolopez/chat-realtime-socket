@@ -29,8 +29,7 @@ create table chat_messages
     constraint uuid_message_pkey primary key,
     uuid_conversation  text not null,
     uuid_user            text not null,
-    message            text,
+    text_message            text,
     created_at      timestamp with time zone,
     updated_at      timestamp with time zone
 );
-

@@ -7,10 +7,22 @@ import "./static/css/styles.css";
 const socket = io("http://localhost:3001");
 const messageForm = document.getElementById("send-container");
 
-const appendMessage = message => {
+const appendMessage = (message) => {
+  const dataUser = document.getElementById('data-user');
+  const uuid_user_this_profile = dataUser.getAttribute('data-id')
+  const text_message = message.text_message
   const messageContainer = document.getElementById("message-container");
   const messageElement = document.createElement("div");
-  messageElement.innerText = message;
+  messageElement.innerText = text_message;
+
+  
+  if(message.uuid_user===uuid_user_this_profile){
+    console.log('uuid_users -- mmmm: ', message.uuid_user, uuid_user_this_profile)
+    messageElement.setAttribute('style','color:#af1111; text-align:right;')
+  }else{
+    messageElement.setAttribute('style','color:#1111af; text-align:left;')
+  }
+
   messageContainer.append(messageElement);
 };
 
@@ -27,17 +39,20 @@ export default class App extends Component {
     /* events socket */
     socket.on("chat-message", data => {
       console.log(data);
-      appendMessage(`${data.name}: ${data.message}`);
+      const message = {text_message: `${data.name}: ${data.message}` }
+      appendMessage(message);
     });
 
     socket.on("user-connected", name => {
       console.log(name);
-      appendMessage(`${name} connected`);
+      const message = {text_message: `${name} connected` }
+      appendMessage(message);
     });
 
     socket.on("user-disconnected", name => {
       console.log(name);
-      appendMessage(`${name} disconnected`);
+      const message = {text_message: `${name} disconnected` }
+      appendMessage(message);
     });
 
     socket.on("users-available", users => {
@@ -56,20 +71,37 @@ export default class App extends Component {
       dataConversation.setAttribute("data-id", conversation.uuid_conversation);
     });
 
+
+    socket.on("messages-conversation", messages => {
+      console.log("messages", messages);
+
+      const messageContainer = document.getElementById("message-container");
+      messageContainer.innerHTML = ``
+
+      messages.map((message, key) => {
+        console.log('message', message)
+
+        const msg = {text_message: `${message.text_message}`, uuid_user: message.uuid_user }
+        appendMessage(msg);
+      })
+    });
+
+
     if (!localStorage.auth) {
       /* Login */
       const name = prompt("What is your name?");
       if (name) {
         localStorage.setItem("auth", name);
-        appendMessage("You joined");
+        const message = {text_message: `You joined`}
+
+        appendMessage(message);
         socket.emit("new-user", name);
       } else {
         console.error("User can't be created");
       }
 
       console.log("name", name);
-    } else {
-      /* get conversations */
+    } else { /* get conversations */
       socket.emit("login-user", localStorage.auth);
     }
   };
@@ -82,13 +114,14 @@ export default class App extends Component {
     const dataConversation = document.getElementById("message-container");
     const uuid_user = dataUser.getAttribute("data-id");
     const uuid_conversation = dataConversation.getAttribute("data-id");
-    const message = messageInput.value;
-    appendMessage(`You: ${message}`);
+    const text_message = messageInput.value;
+    const message = {text_message: `You: ${text_message}`}
+    appendMessage(message);
 
     const data = {
       uuid_conversation: uuid_conversation,
       uuid_user: uuid_user,
-      message: message
+      text_message: text_message
     };
 
     socket.emit("send-chat-message", data);
@@ -102,10 +135,12 @@ export default class App extends Component {
   };
 
   handleCreateConversation = user => {
+    const conversationTitle = document.getElementById("conversation-title");
     const dataUser = document.getElementById("data-user");
     const user_one = dataUser.getAttribute("data-id");
     const user_two = user.uuid_user;
 
+    conversationTitle.innerHTML = `Conversation with ${user.name}`
     console.log("uuid_user_this_profile", dataUser.getAttribute("data-id"));
     console.log("user to new conversation", user);
     /* create new conversation */
@@ -140,6 +175,9 @@ export default class App extends Component {
                 </div>
               );
             })}
+          </div>
+          <div className="frame" id="conversation-title">
+            Conversation with
           </div>
           <div className="frame" id="message-container"></div>
         </div>
