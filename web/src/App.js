@@ -50,13 +50,10 @@ export default class App extends Component {
       dataUser.setAttribute("data-id", user.uuid_user);
     });
 
-
     socket.on("conversation-data", conversation => {
       console.log("conversation-data", conversation);
-      /*
-      const dataUser = document.getElementById("data-user");
-      dataUser.setAttribute("data-id", user.uuid_user);
-      */
+      const dataConversation = document.getElementById("message-container");
+      dataConversation.setAttribute("data-id", conversation.uuid_conversation);
     });
 
     if (!localStorage.auth) {
@@ -81,9 +78,20 @@ export default class App extends Component {
     e.preventDefault();
     console.log("on Submit");
     const messageInput = document.getElementById("message-input");
+    const dataUser = document.getElementById("data-user");
+    const dataConversation = document.getElementById("message-container");
+    const uuid_user = dataUser.getAttribute("data-id");
+    const uuid_conversation = dataConversation.getAttribute("data-id");
     const message = messageInput.value;
     appendMessage(`You: ${message}`);
-    socket.emit("send-chat-message", message);
+
+    const data = {
+      uuid_conversation: uuid_conversation,
+      uuid_user: uuid_user,
+      message: message
+    };
+
+    socket.emit("send-chat-message", data);
     messageInput.value = "";
   };
 
@@ -111,11 +119,6 @@ export default class App extends Component {
 
     if (localStorage.auth) {
       console.log(localStorage.auth);
-      /* return (
-         <div>
-           Auth
-       </div>
-       ) */
     }
 
     return (

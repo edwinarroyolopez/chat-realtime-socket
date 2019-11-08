@@ -58,6 +58,7 @@ module.exports = {
         );
         conversation = rows[0];
       } else {
+        conversation = rows[0];
         console.error("The conversation already exist!");
       }
     } catch (error) {

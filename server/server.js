@@ -25,10 +25,13 @@ io.on("connection", socket => {
     console.log("login: ", name);
   });
 
-  socket.on("send-chat-message", message => {
-    console.log(message);
+  socket.on("send-chat-message", data => {
+    console.log('data-message',data);
+    
+    console.log(data.message);
+
     socket.broadcast.emit("chat-message", {
-      message: message,
+      message: data.message,
       name: users[socket.id]
     });
   });
