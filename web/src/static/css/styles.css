@@ -38,9 +38,13 @@ body {
   }
 
   #message-container {
-    margin: auto;
-    min-width: 280px;
+    width: 300px;
+    border: solid 1px #EEE !important;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
   }
+  /* Util para filas en tablas
   #message-container div {
     background-color: #CCC;
     padding: 5px;
@@ -48,6 +52,8 @@ body {
   #message-container div:nth-child(2n) {
     background-color: #FFF;
   }
+  */
+
   #send-container {
     display: flex;
     bottom: 0;

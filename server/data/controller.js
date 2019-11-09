@@ -43,14 +43,28 @@ module.exports = {
     let uuid_user_one = data.user_one;
     let uuid_user_two = data.user_two;
 
+    console.log('createConversation: ', data )
+    
+
     try {
       const uid = uuid();
+      console.log('new uuid', uid)
+      
+      /* error after a time... losing connection! */
       const client = await pool.connect();
+      
+      console.log('connected client')
+
       const { rows } = await client.query(
         `SELECT * FROM conversation 
           WHERE (uuid_user_one=$1 and uuid_user_two=$2) OR (uuid_user_one=$2 and uuid_user_two=$1)`,
         [uuid_user_one, uuid_user_two]
       );
+
+      console.log('rows...')
+
+      console.log('row - uuid_conversation: ', rows)
+
 
       if (!rows[0]) {
         const { rows } = await client.query(
